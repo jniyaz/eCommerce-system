@@ -18,27 +18,6 @@ class ShopController extends Controller
         return view('shop')->with('products', $products);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
     
     /**
      * Display the specified resource.
@@ -49,29 +28,10 @@ class ShopController extends Controller
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->first();
-        return view('product')->with('product', $product);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $might_also_like_products = Product::where('slug', '!=', $slug)->MightAlsoLike();
+        return view('product')->with([
+                'product' => $product,
+                'mightLikeProducts' => $might_also_like_products
+            ]);
     }
 }
