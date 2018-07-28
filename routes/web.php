@@ -29,11 +29,8 @@ Route::delete('/saveForLater/{product}', 'SaveForLaterController@destroy')->name
 
 Route::post('/saveForLater/switchToCart/{product}', 'SaveForLaterController@switchToCart')->name('saveForLater.switchToCart');
 
-// dummy for testing
-Route::get('/empty', function(){
-    Cart::instance('saveForLater')->destroy();
-});
+Route::get('/checkout', 'CheckoutController@index')->name('checkout.index');
 
-Route::view('/checkout', 'checkout');
+Route::post('/checkout', 'CheckoutController@store')->name('checkout.store');
 
-Route::view('/thankyou', 'thankyou');
+Route::get('/thankyou', 'ConfirmationController@index')->name('confirmation.index');
