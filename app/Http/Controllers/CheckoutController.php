@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Http\Request;
+use App\Http\Requests\CheckoutRequest;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Cartalyst\Stripe\Exception\CardErrorException;
 
 class CheckoutController extends Controller
 {
@@ -24,7 +26,7 @@ class CheckoutController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CheckoutRequest $request)
     {
         $contents = Cart::content()->map(function ($item){
                         return $item->model->slug .', '.$item->qty;
@@ -53,8 +55,8 @@ class CheckoutController extends Controller
             // redirect to thank you page
              return redirect()->route('confirmation.index')->with('success_message', 'Your payment has been accepted. Confirmation email has been sent.');
 
-        } catch (Exception $e) {
-
+        } catch (CardErrorException $e) {
+            return back()->withErrors('Error! ' . $e->getMessage());
         }
 
     }
