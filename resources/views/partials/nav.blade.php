@@ -1,6 +1,6 @@
 <header class="with-background">
     <div class="top-nav container">
-        <div class="logo"><a href="{{ route('landing.index') }}">Ecommerce</a></div>
+        <div class="logo"><a href="{{ route('landing.index') }}">Lara-Ecommerce</a></div>
         <ul>
             <li><a href="{{ route('shop.index') }}">Shop</a></li>
             <li><a href="#">About</a></li>
