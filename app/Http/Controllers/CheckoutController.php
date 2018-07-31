@@ -16,8 +16,13 @@ class CheckoutController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        return view('checkout');
+    { 
+        return view('checkout')->with([
+            'discount' => $this->getNumbers()->get('discount'),
+            'newTax' => $this->getNumbers()->get('newTax'),
+            'newSubtotal' => $this->getNumbers()->get('newSubtotal'),
+            'newTotal' => $this->getNumbers()->get('newTotal')
+        ]);
     }
 
     /**
@@ -37,15 +42,16 @@ class CheckoutController extends Controller
             $stripe = Stripe::make(env('STRIPE_SECRET'));
 
             $charge = $stripe->charges()->create([
-                'amount' => Cart::total() / 100,
+                'amount' => $this->getNumbers()->get('newTotal') / 100,
                 'currency' => 'CAD',
                 'source' => $request->stripeToken,
                 'description' => 'Order',
                 'receipt_email' => $request->email,
                 'metadata' => [
                     // change to Order ID after using DB
-                    'contents' => $contents,
-                    'Quantity' => Cart::instance('default')->count()
+                    'Contents' => $contents,
+                    'Quantity' => Cart::instance('default')->count(),
+                    'Discount' => collect(session()->get('coupon'))->toJson()
                 ]
             ]);
 
@@ -61,48 +67,19 @@ class CheckoutController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+    private function getNumbers(){
+        $tax = config('cart.tax') / 100;
+        $discount = session()->get('coupon')['discount'] ?? 0;
+        $newSubtotal = (Cart::subtotal() - $discount);
+        $newTax = $newSubtotal * $tax;
+        $newTotal = $newSubtotal * (1 + $tax);
+        
+        return collect([
+            'tax' => $tax,
+            'discount' => $discount,
+            'newSubtotal' => $newSubtotal,
+            'newTax' => $newTax,
+            'newTotal' => $newTotal
+        ]);
     }
 }

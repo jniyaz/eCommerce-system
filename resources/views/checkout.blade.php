@@ -126,17 +126,30 @@
                 <div class="checkout-totals">
                     <div class="checkout-totals-left">
                         Subtotal <br>
-                        {{-- Discount (10OFF - 10%) <br> --}}
-                        Tax <br>
+                        @if(session()->has('coupon'))
+                        Discount {{ session()->get('coupon')['name'] }} 
+                        <form action="{{ route('coupon.destroy') }}" method="POST" style="display:inline;">
+                            {{ csrf_field() }}
+                            {{ method_field('delete') }}
+                            <button type="submit">Remove</button>
+                        </form>
+                        <br>
+                        <hr>
+                        New Subtotal <br>
+                        @endif
+                        Tax(6%) <br>
                         <span class="checkout-totals-total">Total</span>
 
                     </div>
 
                     <div class="checkout-totals-right">
                         {{ presentPrice(Cart::subtotal()) }} <br>
-                        {{-- -$750.00 <br> --}}
-                        {{ presentPrice(Cart::tax()) }} <br>
-                        <span class="checkout-totals-total">{{presentPrice(Cart::total())}}</span>
+                        @if(session()->has('coupon'))
+                        -{{ presentPrice($discount) }} <hr>
+                        {{ presentPrice($newSubtotal) }} <br> 
+                        @endif
+                        {{ presentPrice($newTax) }} <br>
+                        <span class="checkout-totals-total">{{ presentPrice($newTotal) }}</span>
 
                     </div>
                 </div> <!-- end checkout-totals -->
@@ -144,9 +157,10 @@
                 <div class="have-code">Have a Code?</div>
 
                 <div class="have-code-container">
-                    <form action="#">
-                        <input type="text" class="form-control">
-                        <input type="submit" class="button" value="Apply">
+                    <form action="{{ route('coupon.store') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="text" name="coupon_code" id="coupon_code" value="">
+                        <button type="submit" class="button button-plain" >Apply</button>
                     </form>
                 </div>
             </div>
