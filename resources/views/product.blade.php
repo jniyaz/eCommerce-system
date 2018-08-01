@@ -31,7 +31,7 @@
             <h2>{{ $product->presentPrice() }}</h2>
 
             <p>
-                {{ $product->description }}
+                {!! $product->description !!}
             </p>
 
             <p>&nbsp;</p>
