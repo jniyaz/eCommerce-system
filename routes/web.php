@@ -40,3 +40,8 @@ Route::post('/coupon', 'CouponController@store')->name('coupon.store');
 Route::delete('/coupon', 'CouponController@destroy')->name('coupon.destroy');
 
 Route::get('/thankyou', 'ConfirmationController@index')->name('confirmation.index');
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+});
