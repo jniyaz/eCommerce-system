@@ -7,10 +7,14 @@
 @endsection
 
 @section('content')
-
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="{{ route('landing.index') }}">Home</a>
+            <i class="fa fa-chevron-right breadcrumb-separator"></i>
+            <a href="{{ route('checkout.index') }}">Checkout</a>
+        </div>
+    </div> <!-- end breadcrumbs -->
     <div class="container">
-
-        <h1 class="checkout">Checkout</h1>
         @if(session()->has('success_message'))
             <div class="alert alert-success">{{ session()->get('success_message') }}</div>
         @endif
