@@ -21,7 +21,7 @@
     <div class="product-section container">
         @if($product)
         <div class="product-section-image">
-            <img src="{{ asset('img/products/'.$product->slug.'.jpg') }}" class="active" alt="product">
+            <img src="{{  productImage($product->image) }}" class="active" alt="product">
         </div>
         <div class="product-section-information">
             <h1 class="product-section-title">{{ $product->name }}</h1>
