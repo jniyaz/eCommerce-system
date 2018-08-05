@@ -56,10 +56,13 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>
-
+                                &nbsp;
                                 <a class="btn btn-link" href="{{ route('password.request') }}">
                                     {{ __('Forgot Your Password?') }}
                                 </a>
+                                &nbsp;
+                                <a href="{{route('guestCheckout.index')}}">Checkout as a Guest</a>
+
                             </div>
                         </div>
                     </form>
