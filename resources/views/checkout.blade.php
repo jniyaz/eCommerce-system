@@ -23,7 +23,7 @@
             <div class="alert alert-danger">
                 <ul>
                     @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                    <li>{!! $error !!}</li>
                     @endforeach
                 </ul>
             </div>
@@ -39,7 +39,11 @@
 
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" class="form-control" readonly id="email" name="email" value="{{ auth()->user()->email }}">
+                        @if(auth()->user())
+                            <input type="email" class="form-control" readonly id="email" name="email" value="{{ auth()->user()->email }}">
+                        @else
+                            <input type="email" class="form-control" required id="email" name="email" value="{{ old('email') }}">
+                        @endif
                     </div>
                     <div class="form-group">
                         <label for="name">Name</label>
