@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\OrderProduct;
+use App\Mail\OrderPlaced;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\CheckoutRequest;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Cartalyst\Stripe\Exception\CardErrorException;
@@ -66,13 +68,17 @@ class CheckoutController extends Controller
                 ]
             ]);
 
-            $this->addToOrdersTables($request, null);
-
-             // Successful
+            $order = $this->addToOrdersTables($request, null);
+            
+            // send email 
+            Mail::send(new OrderPlaced($order));
+            
+            // Successful
             Cart::instance('default')->destroy();
 
             // redirect to thank you page
-             return redirect()->route('confirmation.index')->with('success_message', 'Your payment has been accepted. Confirmation email has been sent.');
+            return redirect()->route('confirmation.index')
+                             ->with('success_message', 'Your payment has been accepted. Confirmation email has been sent.');
 
         } catch (CardErrorException $e) {
             $this->addToOrdersTables($request, $e->getMessage());
@@ -112,7 +118,9 @@ class CheckoutController extends Controller
                 'product_id' => $item->model->id,
                 'quantity' => $item->qty
             ]);
-        } 
+        }
+        
+        return $order;
     }
 
     private function getNumbers(){
