@@ -59,4 +59,25 @@ class ShopController extends Controller
                 'mightLikeProducts' => $might_also_like_products
             ]);
     }
+
+    public function search(Request $request) {
+
+        $request->validate([
+            'query' => 'required|min:3'
+        ]); 
+
+        $query = $request->input('query');
+
+        // tried in manual way
+
+        // $products = Product::where('name', 'like', "%$query%")
+        //                     ->orWhere('details', 'like', "%$query%")
+        //                     ->orWhere('description', 'like', "%$query%")
+        //                     ->paginate(10);
+
+        // using Nicolaslopezj package for searchable full text
+        $products = Product::search($query)->paginate(10);
+
+        return view('search-results')->with('products', $products);
+    }
 }
